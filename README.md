@@ -1,20 +1,14 @@
-# Whisper Web
+# TTS-Assistant
 
 ML-powered speech recognition directly in your browser! Built with [🤗 Transformers.js](https://github.com/xenova/transformers.js).
-
-Check out the demo site [here](https://huggingface.co/spaces/Xenova/whisper-web). 
-
-> [!IMPORTANT]  
-> Experimental WebGPU support has been added to [this branch](https://github.com/xenova/whisper-web/tree/experimental-webgpu) ([demo](https://huggingface.co/spaces/Xenova/whisper-webgpu)), if you'd like to run with GPU acceleration!
-
-https://github.com/xenova/whisper-web/assets/26504141/fb170d84-9678-41b5-9248-a112ecc74c27
+![image](https://github.com/hyzco/TTS-Assistant/assets/48827301/9adba82b-aa8a-44bd-8649-36963d21358b)
 
 ## Running locally
 
 1. Clone the repo and install dependencies:
 
     ```bash
-    git clone https://github.com/xenova/whisper-web.git
+    git clone https://github.com/hyzco/TTS-Assistant.git
     cd whisper-web
     npm install
     ```
@@ -28,3 +22,7 @@ https://github.com/xenova/whisper-web/assets/26504141/fb170d84-9678-41b5-9248-a1
     > Check out [this issue](https://github.com/xenova/whisper-web/issues/8) for more details.
 
 3. Open the link (e.g., [http://localhost:5173/](http://localhost:5173/)) in your browser.
+
+## Running backend RAG application, to be able to chat with LLM, get real time weather information by given location, taking notes, and retrieving it from the Cassandra vector store.
+Check out repo: 
+https://github.com/hyzco/LLM-Rag-Application
