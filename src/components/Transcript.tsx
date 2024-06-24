@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
-
+import React, { useRef, useEffect } from "react";
+import { useWebSocketContext } from "../context/WebSocketProvider";
 import { TranscriberData } from "../hooks/useTranscriber";
 import { formatAudioTimestamp } from "../utils/AudioUtils";
 
@@ -7,8 +7,22 @@ interface Props {
     transcribedData: TranscriberData | undefined;
 }
 
-export default function Transcript({ transcribedData }: Props) {
+const Transcript: React.FC<Props> = ({ transcribedData }) => {
     const divRef = useRef<HTMLDivElement>(null);
+    const { isConnected, error, sendMessage } = useWebSocketContext();
+
+    useEffect(() => {
+      console.log("WebSocket connected:", isConnected);
+      console.log("WebSocket error:", error);
+     
+    
+      if (transcribedData && !transcribedData.isBusy && transcribedData.chunks) {
+        transcribedData.chunks.forEach((chunk) => {
+          sendMessage({ type: "TRANSCRIBED_CHUNK", data: chunk });
+        });
+      }
+    }, [ isConnected, transcribedData, sendMessage, error]);
+    
 
     const saveBlob = (blob: Blob, filename: string) => {
         const url = URL.createObjectURL(blob);
@@ -18,6 +32,7 @@ export default function Transcript({ transcribedData }: Props) {
         link.click();
         URL.revokeObjectURL(url);
     };
+
     const exportTXT = () => {
         let chunks = transcribedData?.chunks ?? [];
         let text = chunks
@@ -28,6 +43,7 @@ export default function Transcript({ transcribedData }: Props) {
         const blob = new Blob([text], { type: "text/plain" });
         saveBlob(blob, "transcript.txt");
     };
+
     const exportJSON = () => {
         let jsonData = JSON.stringify(transcribedData?.chunks ?? [], null, 2);
 
@@ -40,54 +56,56 @@ export default function Transcript({ transcribedData }: Props) {
     };
 
     // Scroll to the bottom when the component updates
-    useEffect(() => {
-        if (divRef.current) {
-            const diff = Math.abs(
-                divRef.current.offsetHeight +
-                    divRef.current.scrollTop -
-                    divRef.current.scrollHeight,
-            );
+    // useEffect(() => {
+    //     if (divRef.current) {
+    //         const diff = Math.abs(
+    //             divRef.current.offsetHeight +
+    //                 divRef.current.scrollTop -
+    //                 divRef.current.scrollHeight
+    //         );
 
-            if (diff <= 64) {
-                // We're close enough to the bottom, so scroll to the bottom
-                divRef.current.scrollTop = divRef.current.scrollHeight;
-            }
-        }
-    });
+    //         if (diff <= 64) {
+    //             // We're close enough to the bottom, so scroll to the bottom
+    //             divRef.current.scrollTop = divRef.current.scrollHeight;
+    //         }
+    //     }
+    // });
 
     return (
         <div
             ref={divRef}
-            className='w-full flex flex-col my-2 p-4 max-h-[20rem] overflow-y-auto'
+            className="w-full flex flex-col my-2 p-4 max-h-[20rem] overflow-y-auto"
         >
             {transcribedData?.chunks &&
                 transcribedData.chunks.map((chunk, i) => (
                     <div
                         key={`${i}-${chunk.text}`}
-                        className='w-full flex flex-row mb-2 bg-white rounded-lg p-4 shadow-xl shadow-black/5 ring-1 ring-slate-700/10'
+                        className="w-full flex flex-row mb-2 bg-white rounded-lg p-4 shadow-xl shadow-black/5 ring-1 ring-slate-700/10"
                     >
-                        <div className='mr-5'>
+                        <div className="mr-5">
                             {formatAudioTimestamp(chunk.timestamp[0])}
                         </div>
                         {chunk.text}
                     </div>
                 ))}
-            {transcribedData && !transcribedData.isBusy && (
-                <div className='w-full text-right'>
+            {/* {transcribedData && !transcribedData.isBusy && (
+                <div className="w-full text-right">
                     <button
                         onClick={exportTXT}
-                        className='text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center'
+                        className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center"
                     >
                         Export TXT
                     </button>
                     <button
                         onClick={exportJSON}
-                        className='text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center'
+                        className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center"
                     >
                         Export JSON
                     </button>
                 </div>
-            )}
+            )} */}
         </div>
     );
-}
+};
+
+export default Transcript;

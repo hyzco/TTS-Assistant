@@ -96,6 +96,9 @@ export function useTranscriber(): Transcriber {
                     text: completeMessage.data.text,
                     chunks: completeMessage.data.chunks,
                 });
+
+                
+                console.log("COMPLETE MESSAGE: ", completeMessage)
                 setIsBusy(false);
                 break;
 

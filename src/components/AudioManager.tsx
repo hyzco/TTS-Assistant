@@ -237,6 +237,12 @@ export function AudioManager(props: { transcriber: Transcriber }) {
         }
     }, [audioDownloadUrl]);
 
+    useEffect(() => {
+        if(audioData != undefined){
+            props.transcriber.start(audioData.buffer);
+        }
+    },[audioData])
+
     return (
         <>
             <div className='flex flex-col justify-center items-center rounded-lg bg-white shadow-xl shadow-black/5 ring-1 ring-slate-700/10'>
@@ -291,15 +297,6 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                     />
 
                     <div className='relative w-full flex justify-center items-center'>
-                        <TranscribeButton
-                            onClick={() => {
-                                props.transcriber.start(audioData.buffer);
-                            }}
-                            isModelLoading={props.transcriber.isModelLoading}
-                            // isAudioLoading ||
-                            isTranscribing={props.transcriber.isBusy}
-                        />
-
                         <SettingsTile
                             className='absolute right-4'
                             transcriber={props.transcriber}
