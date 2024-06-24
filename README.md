@@ -1,6 +1,7 @@
 # TTS-Assistant
 
 ML-powered speech recognition directly in your browser! Built with [🤗 Transformers.js](https://github.com/xenova/transformers.js).
+
 ![image](https://github.com/hyzco/TTS-Assistant/assets/48827301/9adba82b-aa8a-44bd-8649-36963d21358b)
 
 ## Running locally
